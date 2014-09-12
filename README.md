@@ -8,7 +8,13 @@ This cookbook provides an easy way to deploy a Symfony2 application, as well as 
 Requirements
 ============
 
-This does not have any hard dependencies on other cookbooks. However you would obviously need the version of PHP you need to run the Symfony application, and of course Composer. You have the choice of which cookbooks you want to use to have this ready on your nodes.
+__Hard requirements:__
+* git
+
+However you would obviously need the version of PHP you need to run the Symfony application, and of course Composer. You have the choice of which cookbooks you want to use to have this ready on your nodes.
+
+You will also need to install `acl` so that the `setfacl` command to work. If your platform supports the `chmod +a` option, then simply use the `Chef::Provider::SymfonyProjectPermission::Chmod` as the `permission_provider` in the `symfony_project` resource. You won't need to have `acl` installed anymore.
+
 
 ## Platforms:
 
