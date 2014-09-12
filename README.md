@@ -8,13 +8,7 @@ This cookbook provides an easy way to deploy a Symfony2 application, as well as 
 Requirements
 ============
 
-__Hard requirements:__
-* git
-
-However you would obviously need the version of PHP you need to run the Symfony application, and of course Composer. You have the choice of which cookbooks you want to use to have this ready on your nodes.
-
-You will also need to install `acl` so that the `setfacl` command to work. If your platform supports the `chmod +a` option, then simply use the `Chef::Provider::SymfonyProjectPermission::Chmod` as the `permission_provider` in the `symfony_project` resource. You won't need to have `acl` installed anymore.
-
+This does not have any hard dependencies on other cookbooks. However you would obviously need the version of PHP you need to run the Symfony application, and of course Composer. You have the choice of which cookbooks you want to use to have this ready on your nodes.
 
 ## Platforms:
 
@@ -30,7 +24,7 @@ Resources / Providers
 
 ### `symfony_project`
 
-This resource simply extends the built-in `deploy` resource, but provides sensible defaults that are relevant to mostm Symfony projects. For example, symlinks are automatically created for `app/logs`, `app/cache`, and `vendor` into the shared folder so that they persist between deploys. `web/media/uploads` is also automatically symlinked. You can override these links by specifying the `shared_dirs` option in the resource.
+This resource simply extends the built-in `deploy` resource, but provides sensible defaults that are relevant to most Symfony projects. For example, symlinks are automatically created for `app/logs`, `app/cache`, and `vendor` into the shared folder so that they persist between deploys. `web/media/uploads` is also automatically symlinked. You can override these links by specifying the `shared_dirs` option in the resource.
 
 #### Actions
 - All actions supported by the `deploy` resource: [https://docs.getchef.com/resource_deploy.html](https://docs.getchef.com/resource_deploy.html)
