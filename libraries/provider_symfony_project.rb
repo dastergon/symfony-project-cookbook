@@ -20,7 +20,7 @@ require 'chef/provider'
 
 class Chef
   class Provider
-    class SymfonyProjectDeploy < Chef::Provider::Deploy
+    class SymfonyProject < Chef::Provider::Deploy
       def initialize(new_resource, run_context)
         super(new_resource, run_context)
         @permission_provider = new_resource.permission_provider.new(new_resource, run_context)
@@ -32,6 +32,7 @@ class Chef
 
       def action_set_permissions
         converge_by("Setting permission #{ @current}") do
+          verify_directories_exist
           @permission_provider.release_slug(release_slug)
           @permission_provider.action_set_permissions
         end

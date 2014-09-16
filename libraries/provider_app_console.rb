@@ -31,7 +31,6 @@ class Chef
         @current_resource.provider(new_resource.provider)
         @current_resource.user(new_resource.user)
         @current_resource.group(new_resource.group)
-
         @current_resource.run_context = new_resource.run_context
       end
 
@@ -42,16 +41,12 @@ class Chef
       end
 
       def execute_console_command
-
-        executor = Chef::Resource::Execute.new('symfony_project_app_console_' + Time.now.utc.strftime("%Y%m%d%H%M%S"))
-        executor.provider(Chef::Provider::Execute)
+        executor = Chef::Resource::Execute.new('symfony-app-console')
         executor.cwd(@current_resource.app)
-        verbosity = 'v' * @current_resource.verbosity
-        executor.command("php app/console #{ @current_resource.command } --env=#{ @current_resource.env } -#{ verbosity }")
+        executor.command("php app/console #{ @current_resource.command } --env=#{ @current_resource.env } --verbose=#{ @current_resource.verbosity } --no-ansi --no-interaction")
         executor.user(@current_resource.user)
         executor.group(@current_resource.group)
         executor.run_action(:run)
-
       end
     end
   end

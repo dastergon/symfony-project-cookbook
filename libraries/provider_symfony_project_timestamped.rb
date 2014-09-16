@@ -16,14 +16,32 @@
 # limitations under the License.
 #
 
+require 'chef/provider'
 require_relative 'provider_symfony_project'
 
 class Chef
   class Provider
     class SymfonyProject
-      class Dev < Chef::Provider::SymfonyProject
-        def release_slug
-          'dev'
+      class Timestamped < Chef::Provider::SymfonyProject
+
+        def initialize(new_resource, run_context)
+          super(new_resource, run_context)
+          @permission_provider = new_resource.permission_provider.new(new_resource, run_context)
+        end
+
+        def action_set_permissions
+          converge_by("Setting permission #{ @current}") do
+            verify_directories_exist
+            @permission_provider.release_slug(release_slug)
+            @permission_provider.action_set_permissions
+          end
+        end
+
+        def verify_directories_exist
+          super
+          @new_resource.shared_dirs.each_key do |target|
+            create_dir_unless_exists(@new_resource.shared_path + '/' + target)
+          end
         end
       end
     end

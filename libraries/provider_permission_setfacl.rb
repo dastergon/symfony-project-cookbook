@@ -21,8 +21,8 @@ require_relative 'provider_permission'
 
 class Chef
   class Provider
-    class SymfonyProjectPermission
-      class Setfacl < Chef::Provider::SymfonyProjectPermission
+    class SymfonyPermission
+      class Setfacl < Chef::Provider::SymfonyPermission
         def set_permission(directory, user)
           resource = Chef::Resource::Execute.new("setfacl -R -m u:\"#{ user }\":rwX -m u:`whoami`:rwX #{ directory }", @run_context)
           resource.user(@new_resource.user)

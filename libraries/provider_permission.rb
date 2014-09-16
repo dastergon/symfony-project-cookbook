@@ -21,7 +21,7 @@ require 'chef/exceptions'
 
 class Chef
   class Provider
-    class SymfonyProjectPermission < Chef::Provider
+    class SymfonyPermission < Chef::Provider
       def initialize(new_resource, run_context=nil)
         super(new_resource, run_context)
         @release_slug = nil

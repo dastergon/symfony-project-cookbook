@@ -26,7 +26,7 @@ class Chef
         super
         @resource_name = :app_console
         @action = :run
-        @allowed_actions = [:run]
+        @allowed_actions = [:run, :nothing]
         @provider = Chef::Provider::SymfonyProject::AppConsole
 
         @app = name
@@ -46,7 +46,7 @@ class Chef
       end
 
       def verbosity(arg=nil)
-        set_or_return(:verbosity, arg, :kind_of => Fixnum)
+        set_or_return(:verbosity, arg, :kind_of => Fixnum, :regex => /[1-3]/)
       end
 
       def app(arg=nil)

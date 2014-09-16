@@ -17,7 +17,7 @@
 #
 
 require 'chef/resource'
-require_relative 'provider_deploy'
+require_relative 'provider_symfony_project'
 require_relative 'provider_permission_setfacl'
 
 class Chef
@@ -26,7 +26,7 @@ class Chef
       def initialize(name, run_list=nil)
         super(name, run_list)
         @resource_name = :symfony_project
-        @provider = Chef::Provider::SymfonyProjectDeploy
+        @provider = Chef::Provider::SymfonyProject::Timestamped
         @allowed_actions.push(:set_permissions)
         @shared_dirs = {
             'logs' => 'app/logs',
@@ -36,7 +36,7 @@ class Chef
         }
         @create_dirs_before_symlink = ['web/media/uploads']
         @symlinks = @shared_dirs
-        @permission_provider = Chef::Provider::SymfonyProjectPermission::Setfacl
+        @permission_provider = Chef::Provider::SymfonyPermission::Setfacl
         @web_user = 'www-data'
         @purge_before_symlink.clear
         @symlink_before_migrate.clear
