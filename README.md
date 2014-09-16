@@ -27,7 +27,7 @@ Resources / Providers
 This resource simply extends the built-in `deploy` resource, but provides sensible defaults that are relevant to most Symfony projects. For example, symlinks are automatically created for `app/logs`, `app/cache`, and `vendor` into the shared folder so that they persist between deploys. `web/media/uploads` is also automatically symlinked. You can override these links by specifying the `shared_dirs` option in the resource.
 
 #### Actions
-- All actions supported by the `deploy` resource: [https://docs.getchef.com/resource_deploy.html](https://docs.getchef.com/resource_deploy.html)
+- All actions supported by the [`deploy`](https://docs.getchef.com/resource_deploy.html) resource.
 - `:set_permissions` - Sets the permissions of `app/logs`, `app/cache`, and other shared folders you specify.
 
 #### Examples
@@ -40,6 +40,17 @@ symfony_project "/path/to/project" do
     action [:deploy, :set_permissions]
 end
 ```
+
+#### Options
+
+All options for the `deploy` resource is applicable here. However here are additional options that are `symfony_project`-specific:
+
+
+Option | Default | Description
+-------|---------|------------
+__shared_dirs__ | `{'logs' => 'app/logs','cache' => 'app/cache','uploads' => 'web/media/uploads','vendor' => 'vendor'}` | The directories to create under the shared directory and symlinked into every deployment.
+__permission_provider__ | `Chef::Provider::SymfonyPermission::Setfacl` | The provider that handles the setting of the appropriate permissions on the shared directories, most notably `app/logs` and `app/cache`. Only relevant on `:set_permissions`
+__web_user__ | `"www-data"` | The user to whom permission will be granted. Only relevant on `:set_permissions`
 
 License and Authors
 ===================
