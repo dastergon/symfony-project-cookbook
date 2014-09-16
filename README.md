@@ -49,7 +49,7 @@ All options for the `deploy` resource is applicable here. However here are addit
 Option | Default | Description
 -------|---------|------------
 __shared_dirs__ | `{'logs' => 'app/logs','cache' => 'app/cache','uploads' => 'web/media/uploads','vendor' => 'vendor'}` | The directories to create under the shared directory and symlinked into every deployment.
-__permission_provider__ | `Chef::Provider::SymfonyPermission::Setfacl` | The provider that handles the setting of the appropriate permissions on the shared directories, most notably `app/logs` and `app/cache`. Only relevant on `:set_permissions`
+__permission_provider__ | `Chef::Provider::SymfonyPermission::Setfacl` | The provider that handles the setting of the appropriate permissions on the shared directories, most notably `app/logs` and `app/cache`. Only relevant on `:set_permissions`. You can also substitute this for `Chef::Provider::SymfonyPermission::Chmod` if your nodes support the `chmod +a` flag.
 __web_user__ | `"www-data"` | The user to whom permission will be granted. Only relevant on `:set_permissions`
 
 License and Authors
