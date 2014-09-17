@@ -31,8 +31,7 @@ class Chef
         @shared_dirs = {
             'logs' => 'app/logs',
             'cache' => 'app/cache',
-            'uploads' => 'web/media/uploads',
-            'vendor' => 'vendor'
+            'uploads' => 'web/media/uploads'
         }
         @create_dirs_before_symlink = ['web/media/uploads']
         @symlinks = @shared_dirs
