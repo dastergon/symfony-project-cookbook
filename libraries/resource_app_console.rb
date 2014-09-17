@@ -24,20 +24,20 @@ class Chef
     class AppConsole < Chef::Resource
       def initialize(name, run_list=nil)
         super
+        @app = name
         @resource_name = :app_console
         @action = :run
         @allowed_actions = [:run, :nothing]
         @provider = Chef::Provider::SymfonyProject::AppConsole
-
-        @app = name
-        @env = 'dev'
+        @environment = 'dev'
         @command = ''
-        @verbosity = ''
+        @verbosity = 1
         @user = nil
         @group = nil
+        @console = 'php app/console'
       end
 
-      def env(arg=nil)
+      def environment(arg=nil)
         set_or_return(:env, arg, :kind_of => String)
       end
 
@@ -59,6 +59,10 @@ class Chef
 
       def group(arg=nil)
         set_or_return(:group, arg, :kind_of => [String, NilClass])
+      end
+
+      def console(arg=nil)
+        set_or_return(:console, arg, :kind_of => String)
       end
     end
   end

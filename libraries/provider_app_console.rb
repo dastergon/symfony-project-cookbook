@@ -24,13 +24,14 @@ class Chef
     class AppConsole < Chef::Provider
       def load_current_resource
         @current_resource ||= Chef::Resource::AppConsole.new(new_resource.name)
-        @current_resource.app(new_resource.name)
+        @current_resource.app(new_resource.app)
         @current_resource.command(new_resource.command)
-        @current_resource.env(new_resource.env)
+        @current_resource.environment(new_resource.environment)
         @current_resource.verbosity(new_resource.verbosity)
         @current_resource.provider(new_resource.provider)
         @current_resource.user(new_resource.user)
         @current_resource.group(new_resource.group)
+        @current_resource.console(new_resource.console)
         @current_resource.run_context = new_resource.run_context
       end
 
@@ -41,9 +42,9 @@ class Chef
       end
 
       def execute_console_command
-        executor = Chef::Resource::Execute.new('symfony-app-console')
+        executor = Chef::Resource::Execute.new('symfony-app-console', @run_context)
         executor.cwd(@current_resource.app)
-        executor.command("php app/console #{ @current_resource.command } --env=#{ @current_resource.env } --verbose=#{ @current_resource.verbosity } --no-ansi --no-interaction")
+        executor.command("#{ @current_resource.console } #{ @current_resource.command } --env=#{ @current_resource.environment } --verbose=#{ @current_resource.verbosity } --no-ansi --no-interaction")
         executor.user(@current_resource.user)
         executor.group(@current_resource.group)
         executor.run_action(:run)
