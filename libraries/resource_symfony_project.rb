@@ -39,6 +39,18 @@ class Chef
         @web_user = 'www-data'
         @purge_before_symlink.clear
         @symlink_before_migrate.clear
+        @composer_options = {
+           :action => :install,
+           :lock_file_only => true,
+           :dev => false,
+           :prefer_dist => true,
+           :prefer_source => false,
+           :optimize_autoloader => true,
+           :download_phar => true
+        }
+        @parameters = {}
+        @parameters_dist_file = 'app/config/parameters.yml.dist'
+        @parameters_file = 'app/config/parameters.yml'
       end
 
       def shared_dirs(arg=nil)
@@ -52,6 +64,29 @@ class Chef
 
       def web_user(arg=nil)
         set_or_return(:web_user, arg, :kind_of => String)
+      end
+
+      def composer_options(arg=nil)
+        return @composer_options if arg.nil?
+        options = @composer_options.clone
+        options = options.merge(arg)
+        set_or_return(:composer_options, options, :kind_of => Hash)
+      end
+
+      def composer_option(option, value=nil)
+        @composer_options[option] = value
+      end
+
+      def parameters(arg=nil)
+        set_or_return(:parameters, arg, :kind_of => Hash)
+      end
+
+      def parameters_dist_file(arg=nil)
+        set_or_return(:parameters_dist_file, arg, :kind_of => String)
+      end
+
+      def parameters_file(arg=nil)
+        set_or_return(:parameters_file, arg, :kind_of => String)
       end
     end
   end

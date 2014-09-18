@@ -7,3 +7,5 @@ long_description 'Installs/Configures symfony_project'
 version          '0.0.2'
 
 depends 'git', '~> 4.0.2'
+depends 'activelamp_composer', '>0'
+
