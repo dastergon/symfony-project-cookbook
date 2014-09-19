@@ -36,7 +36,7 @@ class Chef
         @create_dirs_before_symlink.clear
         @purge_before_symlink = %w(app/logs)
         @symlinks = @shared_dirs
-        @permission_provider = Chef::Provider::SymfonyPermission::Setfacl
+        @permission_provider = Chef::Provider::SymfonyPermission::Chmod
         @web_user = 'www-data'
         @symlink_before_migrate.clear
         @composer_options = {

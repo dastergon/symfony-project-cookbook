@@ -29,7 +29,7 @@ class Chef
         @action = :run
         @allowed_actions = [:run, :nothing]
         @provider = Chef::Provider::SymfonyProject::AppConsole
-        @environment = 'dev'
+        @environment = :prod
         @command = ''
         @verbosity = 1
         @user = nil
