@@ -12,5 +12,5 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[symfony_project::default]
+      - recipe[activelamp_symfony::default]
     attributes:
