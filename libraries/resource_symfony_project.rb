@@ -30,32 +30,37 @@ class Chef
         @allowed_actions.push(:set_permissions)
         @shared_dirs = {
             'logs' => 'app/logs',
-            'cache' => 'app/cache',
-            'uploads' => 'web/media/uploads'
+            'uploads' => 'web/uploads'
         }
-        @create_dirs_before_symlink = ['web/media/uploads']
+        @world_writable_dirs = %w(app/logs app/cache web/uploads)
+        @create_dirs_before_symlink.clear
+        @purge_before_symlink = %w(app/logs)
         @symlinks = @shared_dirs
         @permission_provider = Chef::Provider::SymfonyPermission::Setfacl
         @web_user = 'www-data'
-        @purge_before_symlink.clear
         @symlink_before_migrate.clear
         @composer_options = {
-           :action => :install,
+           :action => [:download_phar, :install],
            :lock_file_only => true,
            :dev => false,
            :prefer_dist => true,
            :prefer_source => false,
-           :optimize_autoloader => true,
-           :download_phar => true
+           :optimize_autoloader => true
         }
         @parameters = {}
         @parameters_dist_file = 'app/config/parameters.yml.dist'
         @parameters_file = 'app/config/parameters.yml'
+        @parameters_file_template_cookbook = nil
+        @parameters_file_template = 'parameters.yml.erb'
       end
 
       def shared_dirs(arg=nil)
         set_or_return(:shared_dirs, arg, :kind_of => Hash)
         symlinks(arg)
+      end
+
+      def world_writable_dirs(arg=nil)
+        set_or_return(:world_writable_dirs, arg, :kind_of => Array)
       end
 
       def permission_provider(arg=nil)
@@ -87,6 +92,14 @@ class Chef
 
       def parameters_file(arg=nil)
         set_or_return(:parameters_file, arg, :kind_of => String)
+      end
+
+      def parameters_file_template_cookbook(arg=nil)
+        set_or_return(:parameters_file_template_cookbook, arg, :kind_of => [String, Symbol])
+      end
+
+      def parameters_file_template(arg=nil)
+        set_or_return(:parameters_file_template, arg, :kind_of => [NilClass, String])
       end
     end
   end

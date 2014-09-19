@@ -37,26 +37,41 @@ class Chef
         converge_by("Gathering Composer dependencies...") do
           break if @new_resource.composer_options[:action] == :nothing
           composer = Chef::Resource::Composer.new(release_path, run_context)
-          download_phar = @new_resource.composer_options[:download_phar]
-          @new_resource.composer_options.delete(:download_phar)
           @new_resource.composer_options.each do |method, arg|
             composer.send method, arg
           end
           composer.user @new_resource.user
           composer.group @new_resource.group
-          composer.run_action :download_phar if download_phar and @new_resource.composer_options[:action] != :download_phar
           create_parameter_file
-          composer.run_action @new_resource.composer_options[:action]
+          coll = Chef::ResourceCollection.new
+          context = run_context.dup
+          coll << composer
+          context.resource_collection = coll
+          runner = Chef::Runner.new(context)
+          runner.converge
         end
       end
 
       def create_parameter_file
-        Chef::Log.info "Creating parameter file (#{ @new_resource.parameters_file })..."
+
+        return if @new_resource.parameters_file_template.nil?
+
         parameters = YAML.load_file "#{ release_path }/#{ @new_resource.parameters_dist_file }"
         parameters['parameters'] = parameters['parameters'].merge(@new_resource.parameters)
-        file = ::File.open "#{ release_path }/#{ @new_resource.parameters_file }", 'w'
-        file.write parameters.to_yaml
-        file.close
+        template_cookbook = (@new_resource.parameters_file_template_cookbook || @new_resource.cookbook_name || 'activelamp_symfony').to_s
+
+        Chef::Log.info "Creating parameter file (#{ @new_resource.parameters_file })..."
+        converge_by("Creating parameter file (#{ @new_resource.parameters_file })...") do
+          template = Chef::Resource::Template.new("#{ release_path}/#{ @new_resource.parameters_file}", run_context)
+          template.cookbook template_cookbook
+          template.source @new_resource.parameters_file_template
+          template.owner @new_resource.user
+          template.group @new_resource.group
+          template.variables({
+            :parameters => parameters
+          })
+          template.run_action(:create_if_missing)
+        end
       end
 
       def release_slug
@@ -66,7 +81,7 @@ class Chef
       def action_set_permissions
         converge_by("Setting permission #{ @current}") do
           verify_directories_exist
-          @permission_provider.release_slug release_slug
+          @permission_provider.release_path release_path
           @permission_provider.action_set_permissions
         end
       end

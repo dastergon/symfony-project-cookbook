@@ -17,6 +17,7 @@
 #
 
 require 'chef/provider'
+require 'chef/log'
 require_relative 'resource_app_console'
 
 class Chef
@@ -36,18 +37,20 @@ class Chef
       end
 
       def action_run
-        converge_by("Executing #{ @current_resource.command }") do
           execute_console_command
-        end
       end
 
       def execute_console_command
-        executor = Chef::Resource::Execute.new('symfony-app-console', @run_context)
-        executor.cwd(@current_resource.app)
-        executor.command("#{ @current_resource.console } #{ @current_resource.command } --env=#{ @current_resource.environment } --verbose=#{ @current_resource.verbosity } --no-ansi --no-interaction")
-        executor.user(@current_resource.user)
-        executor.group(@current_resource.group)
-        executor.run_action(:run)
+        cmd = "#{ @current_resource.console } #{ @current_resource.command } --env=#{ @current_resource.environment } --verbose=#{ @current_resource.verbosity } --no-ansi --no-interaction"
+        Chef::Log.info 'APP_CONSOLE: Running ' + cmd
+        converge_by("Executing #{ @current_resource.command }") do
+          executor = Chef::Resource::Execute.new('symfony-app-console', @run_context)
+          executor.cwd(@current_resource.app)
+          executor.command(cmd)
+          executor.user(@current_resource.user)
+          executor.group(@current_resource.group)
+          executor.run_action(:run)
+        end
       end
     end
   end

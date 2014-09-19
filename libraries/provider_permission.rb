@@ -24,21 +24,22 @@ class Chef
     class SymfonyPermission < Chef::Provider
       def initialize(new_resource, run_context=nil)
         super(new_resource, run_context)
-        @release_slug = nil
+        @release_path = nil
       end
 
-      def release_slug(arg=nil)
-        if arg.nil? and !@release_slug.nil?
-          return @release_slug
+      def release_path(arg=nil)
+        if arg.nil? and !@release_path.nil?
+          return @release_path
         elsif arg.nil?
-          raise Chef::Exceptions::StandardError, "Release slug is not set yet."
+          raise Chef::Exceptions::StandardError, "Release path is not set yet."
         end
-        @release_slug = arg
+        @release_path = arg
       end
 
       def action_set_permissions
-        @new_resource.shared_dirs.each do |target, link|
-          set_permission(@new_resource.shared_path + '/' + target, @new_resource.web_user)
+        Chef::Log.info 'Setting permissions for dirs: ' + @new_resource.world_writable_dirs.to_s
+        @new_resource.world_writable_dirs.each do |target|
+          set_permission(release_path + '/' + target, @new_resource.web_user)
         end
       end
 
