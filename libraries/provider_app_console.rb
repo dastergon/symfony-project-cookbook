@@ -41,7 +41,7 @@ class Chef
       end
 
       def execute_console_command
-        cmd = "#{ @current_resource.console } #{ @current_resource.command } --env=#{ @current_resource.environment.to_s } --verbose=#{ @current_resource.verbosity } --no-ansi --no-interaction"
+        cmd = "#{ @current_resource.console } #{ @current_resource.command } --env=#{ @current_resource.environment.to_s } --verbose --no-ansi --no-interaction"
         Chef::Log.info 'APP_CONSOLE: Running ' + cmd
         converge_by("Executing #{ @current_resource.command }") do
           executor = Chef::Resource::Execute.new('symfony-app-console', @run_context)
